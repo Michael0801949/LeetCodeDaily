@@ -52,6 +52,7 @@ Logic is not complex, get farmiliar with the data structure problem:
 2. Leverage the built in attribute from 1 write the logic
 '''
 # Single linked list answer
+# Single linked list answer
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -70,7 +71,7 @@ class MyLinkedList:
         for i in range(0, index):
             curr = curr.next
         return curr.val
-        
+
     def addAtHead(self, val: int) -> None:
         self.dummy_head.next = ListNode(val, self.dummy_head.next)
         self.size += 1
@@ -83,7 +84,7 @@ class MyLinkedList:
         self.size += 1     
 
     def addAtIndex(self, index: int, val: int) -> None:
-        if index < 0 or index > self.size - 1: # index here also need validation
+        if index < 0 or index > self.size: # index here also need validation
             return
         curr = self.dummy_head
         for i in range(0, index):
@@ -93,7 +94,7 @@ class MyLinkedList:
         self.size += 1
 
     def deleteAtIndex(self, index: int) -> None:
-        if index < 0 or index > self.size - 1:
+        if index < 0 or index >= self.size:
             return
         curr = self.dummy_head
         for i in range(0, index):
