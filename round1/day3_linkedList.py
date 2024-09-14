@@ -44,3 +44,59 @@ class Solution:
             # Otherwise, proceed to the next node
             head.next = self.removeElements(head.next, val)
             return head
+
+# Q2 Design Linked List: https://leetcode.com/problems/design-linked-list/description/
+'''
+Logic is not complex, get farmiliar with the data structure problem:
+1. Init the data structure, think about what attribute need define for the specific instance to achive function required
+2. Leverage the built in attribute from 1 write the logic
+'''
+# Single linked list answer
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+        
+class MyLinkedList:
+    def __init__(self):
+        # to store instance specific info add self.xxx
+        self.dummy_head = ListNode() # this dummy head helps adding or removing node (q1 as example), it is pointing to None at init, after we add node, it point to the head of node
+        self.size = 0 # size here helps to retrive the length of the linked list but it is not 100% needed
+
+    def get(self, index: int) -> int:
+        if index < 0 or index >= self.size:
+            return -1
+        curr = self.dummy_head.next # this is the current head, or None if we have not add any node to MyLinkedList
+        for i in range(0, index):
+            curr = curr.next
+        return curr.val
+        
+    def addAtHead(self, val: int) -> None:
+        self.dummy_head.next = ListNode(val, self.dummy_head.next)
+        self.size += 1
+
+    def addAtTail(self, val: int) -> None:
+        curr = self.dummy_head
+        while curr.next:
+            curr = curr.next
+        curr.next = ListNode(val)
+        self.size += 1     
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        if index < 0 or index > self.size - 1: # index here also need validation
+            return
+        curr = self.dummy_head
+        for i in range(0, index):
+            curr = curr.next
+        temp = curr.next
+        curr.next = ListNode(val, curr.next)
+        self.size += 1
+
+    def deleteAtIndex(self, index: int) -> None:
+        if index < 0 or index > self.size - 1:
+            return
+        curr = self.dummy_head
+        for i in range(0, index):
+            curr = curr.next
+        curr.next = curr.next.next
+        self.size -= 1
