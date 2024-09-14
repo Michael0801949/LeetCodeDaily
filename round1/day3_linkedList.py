@@ -50,6 +50,7 @@ class Solution:
 Logic is not complex, get farmiliar with the data structure problem:
 1. Init the data structure, think about what attribute need define for the specific instance to achive function required
 2. Leverage the built in attribute from 1 write the logic
+3. be careful about the index boundary see comment in line
 '''
 # Single linked list answer
 # Single linked list answer
@@ -68,7 +69,7 @@ class MyLinkedList:
         if index < 0 or index >= self.size:
             return -1
         curr = self.dummy_head.next # this is the current head, or None if we have not add any node to MyLinkedList
-        for i in range(0, index):
+        for i in range(0, index): # I hesitate to use index or index + 1, should use index, becasue when i = index - 1, curr.next index is index. Again range is left close right open, so last i = index - 1
             curr = curr.next
         return curr.val
 
@@ -84,10 +85,10 @@ class MyLinkedList:
         self.size += 1     
 
     def addAtIndex(self, index: int, val: int) -> None:
-        if index < 0 or index > self.size: # index here also need validation
+        if index < 0 or index > self.size: # index here also need validation, when add it is > size becasue index can be equal = size to add to the very end
             return
-        curr = self.dummy_head
-        for i in range(0, index):
+        curr = self.dummy_head # dummy_head.next may be none if we have not add any node, there will be case add to the begining of the linkedlist, so curr must start with dummy
+        for i in range(0, index): # i need to stop at index -1 to add the val at index, last run of this loop i = index - 1, curr move to curr next(with index equal given index), but we star at dummy node which is before index 0, so curr actual move to index - 1 not index 
             curr = curr.next
         temp = curr.next
         curr.next = ListNode(val, curr.next)
