@@ -123,4 +123,18 @@ class Solution:
             curr = temp
         return pre
 
-
+# recursion
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        return self.reverse(head, None)
+    def reverse(self, curr: ListNode, pre: ListNode) -> ListNode:
+        if curr == None:
+            return pre
+        temp = curr.next
+        curr.next = pre
+        return self.reverse(temp, curr)
