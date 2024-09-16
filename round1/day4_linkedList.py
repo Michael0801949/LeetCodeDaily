@@ -95,3 +95,79 @@ class Solution:
                 diff -= 1
         j.next = j.next.next
         return dummy_head.next
+
+# Q3 Intersection of Two Linked Lists https://leetcode.com/problems/intersection-of-two-linked-lists/description/
+
+'''
+1. The problem requires "return the node at which the two lists intersect". It means we need to compare the node (including val and memory address) not just node.value
+2. It was a bit confuse about the input skipA and skipB, they are not actual input of the function which is a bit missleading
+'''
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+# Answer1 find the size of both linked list then move one pointer by the diff then move the slow pointer: 
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> Optional[ListNode]:
+        i = headA
+        a = headA
+        sizeA = 0
+        j = headB
+        b = headB
+        sizeB = 0
+        while i:
+            i = i.next
+            sizeA += 1
+        while j:
+            j = j.next
+            sizeB += 1
+        if sizeA > sizeB:
+            for _ in range(sizeA-sizeB):
+                a = a.next
+        elif sizeB > sizeA:
+            for _ in range(sizeB-sizeA):
+                b = b.next
+        while a and b: # here compare a and b nodes not just nodes value
+            if a == b:
+                return a
+            else:
+                a = a.next
+                b = b.next
+        return None
+        
+# Answer 2: begin moving 2 pointers at the same time, code reusable
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        dis = self.getLength(headA) - self.getLength(headB)
+        
+        # move at the longer linked list to make both linked list the same length
+        if dis > 0:
+            headA = self.moveForward(headA, dis)
+        else:
+            headB = self.moveForward(headB, abs(dis))
+        
+        # move 2 pointers unit they reach each other
+        while headA and headB:
+            if headA == headB:
+                return headA
+            headA = headA.next
+            headB = headB.next
+        
+        return None
+    
+    def getLength(self, head: ListNode) -> int:
+        length = 0
+        while head:
+            length += 1
+            head = head.next
+        return length
+    
+    def moveForward(self, head: ListNode, steps: int) -> ListNode:
+        while steps > 0:
+            head = head.next
+            steps -= 1
+        return head
