@@ -171,3 +171,61 @@ class Solution:
             head = head.next
             steps -= 1
         return head
+#Q4 Linked List Cycle II https://leetcode.com/problems/linked-list-cycle-ii/description/
+
+'''
+1. If there is a cycle fast pointer will meet slow pointer at one node, need to have that model in mind
+2. Fast pointer will meet the slow pointer before slow pointer reach the cycle entry point the second time. Detail prof: https://programmercarl.com/0142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8II.html#%E6%80%9D%E8%B7%AF
+'''
+# Fast slow pointer answer:
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def detectCycle(self, head: ListNode) -> ListNode:
+        slow = head
+        fast = head
+        
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            
+            # If there is a cycle, the slow and fast pointers will eventually meet
+            if slow == fast:
+                # Move one of the pointers back to the start of the list
+                slow = head
+                while slow != fast:
+                    slow = slow.next
+                    fast = fast.next
+                return slow
+        # If there is no cycle, return None
+        return None
+# Set answer (simple):
+
+class Solution:
+    def detectCycle(self, head: ListNode) -> ListNode:
+        visited = set()
+        
+        while head:
+            if head in visited:
+                return head
+            visited.add(head)
+            head = head.next
+        
+        return None
+
+
+
+
+
+
+
+
+
+
+
+
