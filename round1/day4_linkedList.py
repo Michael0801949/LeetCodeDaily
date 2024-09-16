@@ -30,4 +30,68 @@ class Solution:
             temp1.next = temp2 # point the new next next node next pointer to the temp2
             curr = curr.next.next # move forward to the next swap if there are still 2 or 2+ node left
         return dummy_head.next
-      
+
+# Q2 Remove Nth Node From End of List https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/
+
+'''
+The key points of this problem:
+1. Slow pointer need to stop at N-1th node at the end not the Nth node backward to delete Nth node backward
+2. Boundary of moving is critical
+'''
+
+# Answer 1: move fast pointer first for n + 1 step then move slow pointer
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        # Initialize dummy node, which simplifies edge cases (e.g., removing the first node)
+        dummy_head = ListNode(0)
+        dummy_head.next = head
+        
+        # Two pointers: i and j, both start at dummy_head
+        i = dummy_head
+        j = dummy_head
+        
+        # Move i forward by n+1 steps so that when i reaches the end,
+        # j will be right before the node to remove.
+        for _ in range(n + 1): # can not use i here for index becasue i already mena something, to stop at N-1, diff between i and j is N+1
+            i = i.next
+        
+        # Move both pointers until i reaches the end of the list
+        while i: # while i not while i.next to make sure j stop at N-1th Node, if use i.next here, line 61 need to change to range(n)
+            i = i.next
+            j = j.next
+        
+        # j is now just before the node to remove, so skip it
+        j.next = j.next.next
+        
+        # Return the next node of dummy_head (which is the real head unless we removed the first node)
+        return dummy_head.next
+
+
+
+# Answer 2: move slow pointer while fast pointer, use diff to track the difference between them
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        dummy_head = ListNode(None, head)
+        i = dummy_head
+        j = dummy_head
+        diff = 0
+        while i: # same here, if use i.next need to change line 93 to diff - n > 0
+            diff += 1
+            i = i.next
+            while diff - n - 1  > 0:  # Inner while loop move slow pointer, diff > n + 1 to make sure slow pointer stop before N+1th node backward
+                j = j.next
+                diff -= 1
+        j.next = j.next.next
+        return dummy_head.next
