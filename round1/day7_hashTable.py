@@ -53,3 +53,33 @@ class Solution:
             for j in nums4:
                 cnt += rec.get(-(i+j), 0) 
         return cnt
+# Q2 Ransom Note: https://leetcode.com/problems/ransom-note/description/
+'''
+very similar to valid-anagram
+'''
+# Answer
+class Solution:
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        dic = {}
+        for i in range(len(magazine)):
+            dic[magazine[i]] = dic.get(magazine[i], 0) + 1
+        for j in range(len(ransomNote)):
+            if ransomNote[j] in dic:
+                dic[ransomNote[j]] -= 1
+                if dic[ransomNote[j]] == 0:
+                    del dic[ransomNote[j]]
+            else: return False
+        return True
+# Use count
+class Solution:
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        for char in ransomNote:
+            if char in magazine and ransomNote.count(char) <= magazine.count(char): # string.count(char, startIndex, endIndex) return the number of a character in a string
+                continue
+            else:
+                return False
+        return True
+# even shorter answer
+class Solution:
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        return all(ransomNote.count(c) <= magazine.count(c) for c in set(ransomNote)) # The all() function returns True if all items in an iterable are true, otherwise it returns False. If the iterable object is empty, the all() function also returns True.
