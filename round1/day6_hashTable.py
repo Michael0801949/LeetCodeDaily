@@ -1,4 +1,4 @@
-# Valid Anagram https://leetcode.com/problems/valid-anagram/description/
+# Q1 Valid Anagram https://leetcode.com/problems/valid-anagram/description/
 
 # Answer
 class Solution:
@@ -38,7 +38,6 @@ class Solution:
         return s_dict == t_dict
       
 # use array as hash table
-
 class Solution:
     def isAnagram(self, s: str, t: str) -> bool:
         record = [0] * 26
@@ -52,3 +51,34 @@ class Solution:
                 return False
         return True
 
+# Q2 Intersection of Two Arrays https://leetcode.com/problems/intersection-of-two-arrays/description/
+
+# Set Answer
+class Solution:
+    def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        set1 = set(nums1)
+        set2 = set(nums2)
+        inter = set1 & set2 # intersaction of 2 sets, Union (set1 | set2): Combines both sets. Left Join (set1 - set2): Elements in set1 but not in set2. Right Join (set2 - set1): Elements in set2 but not in set1. Outer Join (set1 ^ set2): Elements in either set, but not in both.
+        return inter
+
+# Even can be shorter
+class Solution:
+    def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        return list(set(nums1) & set(nums2))
+        
+# hash table
+class Solution:
+    def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
+    # store all element in one list into a hash table
+        table = {}
+        for num in nums1:
+            table[num] = table.get(num, 0) + 1
+        
+        # use set to store result
+        res = set()
+        for num in nums2:
+            if num in table:
+                res.add(num)
+                del table[num]
+        
+        return list(res)
