@@ -117,3 +117,61 @@ class Solution:
            if new_num==1: return True
            else: n = new_num
        return False
+# Q4 2 Sum https://leetcode.com/problems/two-sum/description/
+
+'''
+list.index(value) gives the index of a value
+'''
+
+# My answer hash table
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        dic = {}
+        for i in range(len(nums)):
+            if target - nums[i] in dic:
+                return [i, dic[target - nums[i]]]
+            elif target - nums[i] not in dic and nums[i] in dic: # this line optimize when nums[i] already in dic
+                continue
+            else:
+                dic[nums[i]] = i
+        return dic 
+
+# Shorter but no optimization
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        records = dict()
+
+        for index, value in enumerate(nums):  
+            if target - value in records:   # iterate current value to see whether complimentary value in dic
+                return [records[target- value], index]
+            records[value] = index    # if not add value to dic
+        return []
+# Set
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        # use set to store number have iterated
+        seen = set()             
+        for i, num in enumerate(nums):
+            complement = target - num
+            if complement in seen:
+                return [nums.index(complement), i]
+            seen.add(num)
+# 2 pointers
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        nums_sorted = sorted(nums)
+        
+        left = 0
+        right = len(nums_sorted) - 1
+        while left < right:
+            current_sum = nums_sorted[left] + nums_sorted[right]
+            if current_sum == target:
+                left_index = nums.index(nums_sorted[left])
+                right_index = nums.index(nums_sorted[right])
+                if left_index == right_index:
+                    right_index = nums[left_index+1:].index(nums_sorted[right]) + left_index + 1
+                return [left_index, right_index]
+            elif current_sum < target:
+                left += 1
+            else:
+                right -= 1
