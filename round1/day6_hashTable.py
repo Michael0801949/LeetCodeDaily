@@ -82,3 +82,38 @@ class Solution:
                 del table[num]
         
         return list(res)
+# Q3 Happy Number https://leetcode.com/problems/happy-number/description/
+
+'''
+Key to this problem is it is not a math problem
+It is finding out whether the result repeat
+If the number start repeating but not equal to 1 return False
+'''
+
+# use set
+class Solution:
+   def isHappy(self, n: int) -> bool:
+       record = set()
+       while n not in record:
+           record.add(n)
+           new_num = 0
+           n_str = str(n)
+           for i in n_str:
+               new_num+=int(i)**2
+           if new_num==1: return True
+           else: n = new_num
+       return False
+
+# use array
+class Solution:
+   def isHappy(self, n: int) -> bool:
+       record = []
+       while n not in record:
+           record.append(n)
+           new_num = 0
+           n_str = str(n)
+           for i in n_str:
+               new_num+=int(i)**2
+           if new_num==1: return True
+           else: n = new_num
+       return False
