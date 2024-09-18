@@ -138,7 +138,7 @@ class Solution:
                     k -= 1
             i += 1
         return result
-# 2 pointers answer 2
+# 2 pointers answer 2 use range
 class Solution:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
         result = []
@@ -201,3 +201,105 @@ class Solution:
                 else:
                     d[nums[j]] = j
         return result
+#Q4 4sum: https://leetcode.com/problems/4sum/description/
+'''
+1. compared with 3 sum the oprimization is different: nums[i] > target is not enough because negative number can less the result, target > 0 and nums[i] > 0 and nums[i] > target then we can break
+2. boundary: see detail inline comment
+3. In the whole, it is the same thought process as 3 sum, jsut need to fix 2 number first, add one more loop out side
+'''
+
+# answer 1
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        nums.sort()
+        result = []
+        i = 0
+        if len(nums) < 4:
+            return result
+        while i < len(nums) - 3:
+            if nums[i] > target and target > 0 and nums[i] > 0:
+                break
+            while nums[i] == nums[i-1] and i < len(nums) - 3 and i > 0:
+                i += 1
+            j = i + 1
+            while j < len(nums) - 2:
+                while nums[j] == nums[j-1] and j < len(nums) - 2 and j >  i + 1: # boundary of j > i + 1
+                    j += 1
+                left = j + 1
+                right = len(nums) - 1
+                while left < right:
+                    sum4 = nums[i] + nums[j] + nums[left] + nums[right]
+                    if sum4 < target:
+                        left += 1
+                    elif sum4 > target:
+                        right -= 1
+                    else:
+                        result.append([ nums[i], nums[j], nums[left], nums[right]])
+                        while nums[left] == nums[left + 1] and left + 1 < right: # boundary of left + 1
+                            left += 1
+                        while nums[right] == nums[right - 1] and left < right - 1: # boundary of right -1
+                            right -= 1
+                        left += 1
+                        right -= 1
+                j += 1
+            i += 1
+        return result
+        
+# answer2 use range
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        nums.sort()
+        n = len(nums)
+        result = []
+        for i in range(n):
+            if nums[i] > target and nums[i] > 0 and target > 0:
+                break
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            for j in range(i+1, n):
+                if nums[i] + nums[j] > target and target > 0:
+                    break
+                if j > i+1 and nums[j] == nums[j-1]:
+                    continue
+                left, right = j+1, n-1
+                while left < right:
+                    s = nums[i] + nums[j] + nums[left] + nums[right]
+                    if s == target:
+                        result.append([nums[i], nums[j], nums[left], nums[right]])
+                        while left < right and nums[left] == nums[left+1]:
+                            left += 1
+                        while left < right and nums[right] == nums[right-1]:
+                            right -= 1
+                        left += 1
+                        right -= 1
+                    elif s < target:
+                        left += 1
+                    else:
+                        right -= 1
+        return result
+# answer 3 use dictionary
+class Solution(object):
+    def fourSum(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: List[List[int]]
+        """
+        # create a dic to store the frequency of each number
+        freq = {}
+        for num in nums:
+            freq[num] = freq.get(num, 0) + 1
+        
+        # create a set to store final answer
+        ans = set()
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                for k in range(j + 1, len(nums)):
+                    val = target - (nums[i] + nums[j] + nums[k])
+                    if val in freq:
+                        # make sure no repeat
+                        count = (nums[i] == val) + (nums[j] == val) + (nums[k] == val)
+                        if freq[val] > count:
+                            ans.add(tuple(sorted([nums[i], nums[j], nums[k], val])))
+        
+        return [list(x) for x in ans]
