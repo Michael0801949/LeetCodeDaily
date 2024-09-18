@@ -83,3 +83,121 @@ class Solution:
 class Solution:
     def canConstruct(self, ransomNote: str, magazine: str) -> bool:
         return all(ransomNote.count(c) <= magazine.count(c) for c in set(ransomNote)) # The all() function returns True if all items in an iterable are true, otherwise it returns False. If the iterable object is empty, the all() function also returns True.
+
+
+# Q3 3 Sums: https://leetcode.com/problems/3sum/description/
+'''
+Thought Process:
+    1. Sort list
+    2. Set var1 at i
+    3. j and k as 2 pointers iterate from left to right, right to left
+Details:
+    Remove Duplication:
+        1. Remove duplication for i when nums[i] == nums[i - 1], it is i - 1 not i + 1 becasue the same element can duplicate in a result but not duplicate in 2 or more result
+        2. Remove j and k duplications when find a match: not using -1 here becasue all duplications need to be remove which is not the same situation as i
+    Boundary:
+        when remove duplication with i-1, k+1 ,j+1, do not forget the boundary of them
+    Optimization:
+        1. check whether len(array) < 3
+        2. if nums[i] > 0 and nums[i] is the smallest number, there sum is not possible = 0
+'''
+# 2 pointers Answer1
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        result = []
+        i = 0
+        if len(nums) < 3:
+            return result
+        
+
+        while i < len(nums) - 2:
+            if nums[i] > 0:
+                break
+
+            while i >= 1 and nums[i] == nums[i - 1] and i < len(nums) - 2 : # boundary i
+                i += 1
+
+            j = i + 1
+            k = len(nums) - 1
+
+            while j < k:
+                sums3 = nums[i] +  nums[j] + nums[k]
+
+                if sums3 > 0:
+                    k -= 1
+                elif sums3 < 0:
+                    j += 1
+                else:
+                    result.append([nums[i], nums[j], nums[k]])
+                    while nums[j] == nums[j+1] and j + 1 < k: # boundary j + 1
+                        j += 1
+                    while nums[k] == nums[k-1] and j < k - 1: # boundary k - 1
+                        k -= 1
+                    j += 1 # do not forget to move pointers aftermatch
+                    k -= 1
+            i += 1
+        return result
+# 2 pointers answer 2
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        nums.sort()
+        
+        for i in range(len(nums)):
+            # if first element > 0 no need to check
+            if nums[i] > 0:
+                return result
+            
+            # skip same i, prevent dup
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+                
+            left = i + 1
+            right = len(nums) - 1
+            
+            while right > left:
+                sum_ = nums[i] + nums[left] + nums[right]
+                
+                if sum_ < 0:
+                    left += 1
+                elif sum_ > 0:
+                    right -= 1
+                else:
+                    result.append([nums[i], nums[left], nums[right]])
+                    
+                    # skip same element, prevent dup
+                    while right > left and nums[right] == nums[right - 1]:
+                        right -= 1
+                    while right > left and nums[left] == nums[left + 1]:
+                        left += 1
+                        
+                    right -= 1
+                    left += 1
+                    
+        return result
+        
+# use dictionary
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        nums.sort()
+        # find a + b + c = 0
+        # a = nums[i], b = nums[j], c = -(a + b)
+        for i in range(len(nums)):
+            # if first element > 0 no need to check
+            if nums[i] > 0:
+                break
+            if i > 0 and nums[i] == nums[i - 1]: # dedup element a 
+                continue
+            d = {}
+            for j in range(i + 1, len(nums)):
+                if j > i + 2 and nums[j] == nums[j-1] == nums[j-2]: # dedup element b
+                    continue
+                c = 0 - (nums[i] + nums[j])
+                if c in d:
+                    result.append([nums[i], nums[j], c])
+                    d.pop(c) # dedup element c
+                else:
+                    d[nums[j]] = j
+        return result
