@@ -93,3 +93,14 @@ class Solution:
             s = s[:i] + s[i:j][::-1] + s[j:]
             i += 2*k
         return s
+# Q3 substitute number: https://kamacoder.com/problempage.php?pid=1064
+'''
+extra spce O(n)
+'''
+class Solution:
+    def to_number(self, s: str):
+        slist = list(s)
+        for i in range(len(slist)):
+            if slist[i].isdigit(): # isnumeric() also works here, key difference isdigit return False for fraction number like 1/2 isnumeric return True
+                slist[i] = 'number'
+        return ''.join(slist)
