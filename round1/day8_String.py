@@ -62,3 +62,34 @@ class Solution:
         Do not return anything, modify s in-place instead.
         """
         s.reverse()
+# Q2 Reverse Strin ii: https://leetcode.com/problems/reverse-string-ii/description/
+'''
+1. Only need to check every 2k and opreate on the first k element, so the pointer should be incremental by 2k
+2. I was a bit hesitate and confused on the start point of left pointer and right pointer, it is actually pretty simple:
+left is i right is i + k
+'''
+# Answer 2 pointer:
+class Solution:
+    def reverseStr(self, s: str, k: int) -> str:
+        def reverseList(s: str):
+            left, right = 0, len(s) - 1
+            while left < right:
+                s[left], s[right] = s[right], s[left]
+                left += 1
+                right -= 1
+            return s
+        res = list(s)
+        for i in range(0,len(s), 2*k):
+            res[i: i + k] = reverseList(res[i: i + k])
+        return ''.join(res)
+
+# Not using list
+class Solution:
+    def reverseStr(self, s: str, k: int) -> str:
+        i = 0
+
+        while i < len(s):
+            j = i + k
+            s = s[:i] + s[i:j][::-1] + s[j:]
+            i += 2*k
+        return s
