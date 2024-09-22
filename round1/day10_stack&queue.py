@@ -107,3 +107,65 @@ class MyStack:
 
     def empty(self) -> bool:
         return not self.que
+# Q3 Valid Parentheses: https://leetcode.com/problems/valid-parentheses/description/
+'''
+There are 3 senerios:
+1. Miss match paratheses
+2. Extra paratheses on the left
+3. Extra paratheses on the right
+'''
+
+# My answer, I did not map open paratheses to close paratheses
+class Solution:
+    def isValid(self, s: str) -> bool:
+        if s == '':
+            return True
+        if s == ']' or s == '}' or s == ')' or s == '[' or s == '{' or s == '(':
+            return False 
+        slist = list(s)
+        stack = []
+        for i in slist:
+            if i in [ '(' , '{' , '[' ]: # append if open
+                stack.append(i)
+            elif i in [ ')' , '}' , ']' ] and stack == []: # I missed this situation in the first try, extra paratheses on the right side
+                return False
+            elif i == ')' and stack[-1] != '(' or i == ']' and stack[-1] != '[' or i == '}' and stack[-1] != '{': # check if not match return False
+                return False
+            elif i == ')' and stack[-1] == '(' or i == ']' and stack[-1] == '[' or i == '}' and stack[-1] == '{': # check if match pop
+                stack.pop()
+        return stack == []
+
+# map open paratheses to close paratheses, code is more concise 
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        slist = list(s)
+
+        for i in slist:
+            if i == '(':
+                stack.append(')')
+            elif i == '[':
+                stack.append(']')
+            elif i == '{':
+                stack.append('}')
+            elif not stack or i != stack[-1]:
+                return False
+            else:
+                stack.pop()
+        return stack == []
+        
+# create a new dictionary to map open close paratheses
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        slist = list(s)
+        dic = {'(':')', '[': ']', '{': '}'}
+
+        for i in slist:
+            if i in dic.keys():
+                stack.append(dic[i])
+            elif not stack or i != stack[-1]:
+                return False
+            else:
+                stack.pop()
+        return stack == []
