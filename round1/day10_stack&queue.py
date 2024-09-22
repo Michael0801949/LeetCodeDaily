@@ -37,3 +37,73 @@ class MyQueue:
     def empty(self) -> bool:
         # both in and out are empty then we can say the queue is empty
         return not (self.stack_in or self.stack_out)
+
+# 225. Implement Stack using Queues https://leetcode.com/problems/implement-stack-using-queues/description/
+'''
+If use 2 queue to simulate a stack it is the same as Q1,
+Need to realize 1 queue can simulate 1 stack.
+Queue is not like stack (add item and access from the same end), queue add item from one end and access from another end.
+This character helps us append back the pop item to simulate stack with just 1 Queue
+'''
+
+# 1 list simulite
+class MyStack:
+    def __init__(self):
+        self.queue = []
+        
+    def push(self, x: int) -> None:
+        self.queue.append(x)
+
+    def pop(self) -> int:
+        if not self.queue:  # Check if the queue is empty
+            return None
+
+        i = 0
+        # Rotate the queue to bring the last pushed element to the front
+        while i <= len(self.queue) - 2:
+            self.queue.append(self.queue.pop(0))
+            i += 1
+        pop_item = self.queue.pop(0)
+        # Pop the first element which is the last pushed element
+        return pop_item
+        
+    def top(self) -> int:
+        top_item = self.queue.pop()
+        # Return the last pushed element without removing it
+        self.queue.append(top_item)
+        return top_item
+
+    def empty(self) -> bool:
+        return not self.queue
+        
+# use deque()
+    def __init__(self):
+        self.que = deque()
+
+    def push(self, x: int) -> None:
+        self.que.append(x)
+
+    def pop(self) -> int:
+        if self.empty():
+            return None
+        for i in range(len(self.que)-1):
+            self.que.append(self.que.popleft())
+        return self.que.popleft()
+
+    def top(self) -> int:
+        # method 1：
+        # if self.empty():
+        #     return None
+        # return self.que[-1]
+
+        # method2：
+        if self.empty():
+            return None
+        for i in range(len(self.que)-1):
+            self.que.append(self.que.popleft())
+        temp = self.que.popleft()
+        self.que.append(temp)
+        return temp
+
+    def empty(self) -> bool:
+        return not self.que
