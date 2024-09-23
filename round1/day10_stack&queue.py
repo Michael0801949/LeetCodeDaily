@@ -169,3 +169,53 @@ class Solution:
             else:
                 stack.pop()
         return stack == []
+# Remove All Adjacent Duplicates In String: https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/description/
+'''
+Did not thought about using stack in the first place, but then I realized it is the same as Q2
+'''
+
+# use just 2 while loop, barely pass performance, complexity N**2
+class Solution:
+    def removeDuplicates(self, s: str) -> str:
+        slist = list(s)
+        i = 0
+        while i <= len(slist) - 1:
+            while i >= 1 and slist[i] == slist[i-1]:
+                slist = slist[0:i - 1] + slist[i + 1:]
+                i = i - 2 # go back to the item before removed item to see whether there are new adjacent dup created because of the removal
+            i += 1
+        return ''.join(slist)
+
+
+# Use Stack
+class Solution:
+    def removeDuplicates(self, s: str) -> str:
+        sl = list(s)
+        stack = []
+        for i in sl:
+            if stack and stack[-1] == i:
+                stack.pop()
+            else:
+                stack.append(i)
+        return ''.join(stack)
+# fast slow pointer
+class Solution:
+    def removeDuplicates(self, s: str) -> str:
+        res = list(s)
+        slow = fast = 0
+        length = len(res)
+
+        while fast < length:
+            # keep swapping move the different item to slow
+            res[slow] = res[fast]
+            
+            # if same item, slow -= 1
+            if slow > 0 and res[slow] == res[slow - 1]:
+                slow -= 1
+            else:
+                slow += 1
+            fast += 1
+            
+        return ''.join(res[0: slow])
+
+        
