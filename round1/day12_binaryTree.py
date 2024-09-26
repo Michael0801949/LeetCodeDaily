@@ -145,3 +145,65 @@ class Solution:
                 stack.append(node.right) # right in last, out first
 
         return result[::-1] # reverse the list to get the correct order
+# Q4 102. Binary Tree Level Order Traversal: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
+
+# iteration approach
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+from collections import deque 
+
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+
+            return []
+        queue = deque([root])
+        result =[] # store final result
+        while queue:
+            level = [] # store each level vals as a list
+            for _ in range(len(queue)):
+                curr = queue.pop() # a pointer pointing to the current node
+                level.append(curr.val) # append current node val to the level
+                # store the next level nodes to the queue, so the curr pointer can use in the next level iteration
+                if curr.left:
+                    queue.appendleft(curr.left) 
+                if curr.right:
+                    queue.appendleft(curr.right)
+            result.append(level) # append level list to the result
+            
+        return result
+
+# recurssion approach
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root: # input validation
+            
+            return []
+        levels = []
+
+        def bfs(node: Optional[TreeNode], level: int):
+            if not root: # input validation
+                return []
+            if len(levels) == level: # when len(levels) == level, it means we are iterating a new level now, previous level is done
+                levels.append([]) # need to append a new list to store numbers
+            levels[level].append(node.val) # append the value of node to each level(inner list)
+            if node.left:
+                bfs(node.left, level+1) # move to left
+            if node.right:
+                bfs(node.right, level+1) # move to right
+        bfs(root,0) # start from root node and 0
+        
+        return levels
