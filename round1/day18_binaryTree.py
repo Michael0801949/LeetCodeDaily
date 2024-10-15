@@ -1,36 +1,44 @@
-#Q1: 235. Lowest Common Ancestor of a Binary Search Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+# Q1 530. Minimum Absolute Difference in BST: https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/
 '''
-the key is understanding: if a node.val is between p.val and q.val, 
-then the node is the Lowest Common Ancestor
+order left -> parent -> right  makes sure visit the node in a sorted order
 '''
-# Recurssion:
 # Definition for a binary tree node.
 # class TreeNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
-
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
 class Solution:
-    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+    
+    # initialize variable
+    def __init__(self):
+        self.pre = None
+        self.result = 10**5
+    
 
-        if not root:
-            return root
-        ceil = max(p.val,q.val)
-        floor = min(p.val,q.val)
+    def traversal(self, curr: Optional[TreeNode]):
+        if not curr:
+            return
+        # left recurssion
+        self.traversal(curr.left)
+        # current level logic: check whether new diff < previous diff, move pre pointer to curr pointer place
+        if self.pre is not None:
+            self.result = min(self.result, abs(self.pre.val - curr.val))
+        self.pre = curr
+        # right recurssion
+        self.traversal(curr.right)
 
-        if root.val <= ceil and root.val >= floor:
-            return root
-        elif root.val > ceil:
-                    return self.lowestCommonAncestor(root.left, p, q)
-        elif root.val < floor:
-                    return self.lowestCommonAncestor(root.right, p, q)
+    def getMinimumDifference(self, root: Optional[TreeNode]) -> int:
 
-#Q2: 701. Insert into a Binary Search Tree: https://leetcode.com/problems/insert-into-a-binary-search-tree/description/
+        self.traversal(root)
+        return self.result
+
+# Q2 501. Find Mode in Binary Search Tree: https://leetcode.com/problems/find-mode-in-binary-search-tree/
+
+# utilize character of BST
 '''
-add to any node is OK, so we just need find a leaf place:
-if node < parent check node.left to find leaf
-if node > parent check node.right to find leaf
+Similar to Q1, BST values are in ascending order when we use in-order traversal
+use 2 pointer to munipulate count and max count to find result in one traversal
 '''
 # Definition for a binary tree node.
 # class TreeNode:
@@ -40,99 +48,86 @@ if node > parent check node.right to find leaf
 #         self.right = right
 class Solution:
     def __init__(self):
-        self.parent = None
+        self.result = []
+        # previous value pointer, point to the previous node of curr pointer
+        self.pre = None
+        self.count = 0
+        self.max_count = 0
 
-    def traversal(self, cur, val):
-        if cur is None:
-            node = TreeNode(val)
-            if val > self.parent.val:
-                self.parent.right = node
-            else:
-                self.parent.left = node
+    def traversal(self,curr):
+        # base case logic
+        if not curr:
             return
+        # recursion on the left subtree
+        self.traversal(curr.left)
+        # current layer logic: update count, pre pointer, max_count
+        if self.pre is None or self.pre.val != curr.val:
+            self.count = 1
+        else:
+            self.count += 1
+        self.pre = curr
+        if self.count == self.max_count:
+            self.result.append(curr.val)
+        elif self.count > self.max_count:
+            self.result = [curr.val]
+            # no need to update max_count untill there is one value > 0 (initial vlaue of max_count)
+            self.max_count = self.count
+        # recurssion on the right sub tree
+        self.traversal(curr.right)
 
-        self.parent = cur
-        if cur.val > val:
-            self.traversal(cur.left, val)
-        if cur.val < val:
-            self.traversal(cur.right, val)
 
-    def insertIntoBST(self, root, val):
-        self.parent = TreeNode(0)
-        if root is None:
-            return TreeNode(val)
-        self.traversal(root, val)
-        return root
+    def findMode(self, root: Optional[TreeNode]) -> List[int]:
+        self.traversal(root)
 
-# simplified recurssion
-    
+        return self.result
+
+# Q3 236. Lowest Common Ancestor of a Binary Tree: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/description/
+
 # Definition for a binary tree node.
 # class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
 class Solution:
-    def insertIntoBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
-        if not root:
-            return TreeNode(val)
-        if root.val > val:
-            root.left = self.insertIntoBST(root.left, val)
-        if root.val < val:
-            root.right = self.insertIntoBST(root.right, val)
-        return root
-
-# Q3 450. Delete Node in a BST: https://leetcode.com/problems/delete-node-in-a-bst/description/
-
-'''
-if the node has both left and right subtree need to move the left subtree to the very 
-left of right subtree. 
-'''
-# Recurssion
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-class Solution:
-    def deleteNode(self, root: Optional[TreeNode], key: int) -> Optional[TreeNode]:
-        # end conditions, if node is null, if node has one child, if node has both child
-        if not root:
+    def lowestCommonAncestor(self, root, p, q):
+        if root == q or root == p or root is None:
             return root
-        if root.val == key and root.left and not root.right:
-            return root.left
-        elif root.val == key and root.right and not root.left:
-            return root.right
-        elif root.val == key and root.right and root.left:
-            curr = root.right
-            while curr.left:
-                curr = curr.left
-            curr.left = root.left
-            return root.right
-        elif root.val == key and not root.right and not root.left:
+
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        if left is not None and right is not None:
+            return root
+
+        if left is None and right is not None:
+            return right
+        elif left is not None and right is None:
+            return left
+        else: 
             return None
         
-        # current level logic is hiden here: "root.left =", "root.right =". The do recursion
-        root.left = self.deleteNode(root.left, key)
-        root.right = self.deleteNode(root.right, key)
-
-        # return to current level
-        return root
-    
-# simplified recurssion:
+# simplified recursion
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
 class Solution:
-    def deleteNode(self, root, key):
-        if root is None:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        # Base case: If we reach a null node, return None
+        # If we find either p or q, return root (this can be part of the LCA)
+        if root == q or root == p or root is None:
             return root
-        if root.val == key: 
-            if root.right is None:  # if right is None just return left
-                return root.left
-            cur = root.right
-            while cur.left:  # if right is not None, then this will only be executed if left is also not None
-                cur = cur.left
-            # exchange the value of the node to delete and the value of root, int this way it also form a valid BST instead of deletion, and the leaf node (match val) will be remove in the next level 
-            root.val, cur.val = cur.val, root.val
-        root.left = self.deleteNode(root.left, key) 
-        root.right = self.deleteNode(root.right, key)
-        return root
+        
+        # Search left and right subtrees
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        # If both left and right are non-null, root is the LCA
+        if left and right:
+            return root
+        
+        # Otherwise, return either the left or right subtree that is non-null
+        return left if left else right

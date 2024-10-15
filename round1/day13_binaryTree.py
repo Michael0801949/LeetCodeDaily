@@ -1,6 +1,153 @@
-# q1 226. Invert Binary Tree: https://leetcode.com/problems/invert-binary-tree/description/
+# Q1 Binary Tree Preorder Traversal: https://leetcode.com/problems/binary-tree-preorder-traversal/description/
+'''
+Root → Left → Right
+'''
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        r = []
+        def dfs(node):
+            if node is None:
+                return
+            r.append(node.val)
+            dfs(node.left)
+            dfs(node.right)
+        dfs(root)
+      
+        return r
+      
+# do not define dfs
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        r = []
+        if root is None:
+            return r  # Return an empty list instead of None 
+        # Add the root's value
+        r.append(root.val)   
+        # Recursively traverse the left subtree and append the result
+        r += self.preorderTraversal(root.left)      
+        # Recursively traverse the right subtree and append the result
+        r += self.preorderTraversal(root.right)
+    
+        return r
+        
+# iterative method：same as iteration order, append to result as we pop node from stack
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        stack = [root]
+        result = []
+        if root is None:
+            
+            return result
+        while stack:
+            node = stack.pop()
+            result.append(node.val)
+            if node.right:
+                stack.append(node.right) # add right node first, when pop right node comes out last
+            if node.left:
+                stack.append(node.left) # add left node last, when pop left node comes out first
 
-# the method I prefer: bfs
+        return result
+        
+# Q2 94. Binary Tree Inorder Traversal: https://leetcode.com/problems/binary-tree-inorder-traversal/description/
+'''
+Left → Root → Right
+'''
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        r = []
+        def dfs(node):
+            if node is None:
+                return
+            dfs(node.left)
+            r.append(node.val)
+            dfs(node.right)
+        dfs(root)
+      
+        return r
+      
+# do not define dfs
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        r = []
+        if root is None:
+            return r  # Return an empty list instead of None
+        # Recursively traverse the left subtree and append the result
+        r += self.inorderTraversal(root.left) 
+        # Add the root's value
+        r.append(root.val)        
+        # Recursively traverse the right subtree and append the result
+        r += self.inorderTraversal(root.right)
+    
+        return r
+# iterative method: different from iteration order, need curr as pointer 
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        stack = []
+        result = []
+        curr = root
+        while curr or stack:
+            if curr: # if curr point to a node not None, continue move to the left until pointing to None, meanwhile append all the node to stack
+                stack.append(curr)
+                curr = curr.left
+            # when point to None, go back to the last node (stack.pop()), and try to find right child, 
+            # if no right child (curr is None), if will go back to the second last node whith the stack pop one more time etc.
+            else: 
+                curr = stack.pop()
+                result.append(curr.val)
+                curr = curr.right
+        return result
+
+#Q3 145. Binary Tree Postorder Traversal https://leetcode.com/problems/binary-tree-postorder-traversal/description/
+'''
+Left → Right → Root
+'''
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        r = []
+        def dfs(node):
+            if node is None:
+                return
+            dfs(node.left)
+            dfs(node.right)
+            r.append(node.val)
+        dfs(root)
+      
+        return r
+      
+# do not define dfs
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        r = []
+        if root is None:
+            return r  # Return an empty list instead of None
+        # Recursively traverse the left subtree and append the result
+        r += self.postorderTraversal(root.left) 
+        # Recursively traverse the right subtree and append the result
+        r += self.postorderTraversal(root.right)
+        # Add the root's value
+        r.append(root.val) 
+    
+        return r
+# iterative method: same as the preorder but reverse result and change left and right order
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        stack = [root]
+        result = []
+        if root is None:
+            
+            return result
+        while stack:
+            node = stack.pop()
+            result.append(node.val)
+            if node.left:
+                stack.append(node.left) # left in first, out last
+            if node.right:
+                stack.append(node.right) # right in last, out first
+
+        return result[::-1] # reverse the list to get the correct order
+# Q4 102. Binary Tree Level Order Traversal: https://leetcode.com/problems/binary-tree-level-order-traversal/description/
+
+# iteration approach
 
 # Definition for a binary tree node.
 # class TreeNode:
@@ -8,67 +155,32 @@
 #         self.val = val
 #         self.left = left
 #         self.right = right
-from collections import deque
+
+from collections import deque 
 
 class Solution:
-    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
-        if not root: # input validation
-
-            return None
-        q = deque([root]) # queue point to the root at begining
-
-        while q: # untill no element in queue
-            curr = q.pop() # curr is a pointer point to the earliest node leftappended to q
-            if curr.left or curr.right: # if the curr node have a left or right child, swap them
-                curr.left, curr.right = curr.right, curr.left
-            if curr.left: # if ahve a left child, append to queue
-                q.appendleft(curr.left)
-            if curr.right: # if ahve a right child, append to queue
-                q.appendleft(curr.right)
-        return root
-
-# q2 101. Symmetric Tree: https://leetcode.com/problems/symmetric-tree/description/
-'''
-Key Points of recursive:
-1. Parameter and return value: specify which parameters need to be processed in the recursion, add as parameter. 
-   Specify what need to be return in each level of recursion, confirm the return data type of recursive function
-2. Specify recursion end condition: if encounter stack overflow, it is usually caused by wrong end condition. Recursion depend on
-   stack to store information on each recursive layer
-3. Specify single layer logic: specify what logic need to be implimented on each single layer
-'''
-# Recursive (post order iteration):
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-class Solution:
-    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
         if not root:
-            return True
-        leftNode = root.left
-        rightNode = root.right
-        return self.isEqual(leftNode, rightNode)
-    
 
-    def isEqual(self, leftNode, rightNode) -> bool: # parameters are the leftNode and rightNode, take one node from right and left see whether tehy are the same to determine symmetric
-        if not leftNode and not rightNode: # End Condition 1: left and right node are both None
-            return True
-        elif not leftNode and rightNode is not None or not rightNode and leftNode is not None: # End Condition 2: left and right node are both None
-            return False
-        elif leftNode.val != rightNode.val: # End Condition 3: left and right value are different
-            return False
-        # Continue recursion if does not meet end condition, add logic move to the next Node
-        # Need to eveluate whether outside equal and inside equal
-        outside = self.isEqual(leftNode.left, rightNode.right)
-        inside = self.isEqual(leftNode.right, rightNode.left)
-        # return the final boolean from when the end condition meet, if both True return True, else return False
-        return outside and inside
+            return []
+        queue = deque([root])
+        result =[] # store final result
+        while queue:
+            level = [] # store each level vals as a list
+            for _ in range(len(queue)):
+                curr = queue.pop() # a pointer pointing to the current node
+                level.append(curr.val) # append current node val to the level
+                # store the next level nodes to the queue, so the curr pointer can use in the next level iteration
+                if curr.left:
+                    queue.appendleft(curr.left) 
+                if curr.right:
+                    queue.appendleft(curr.right)
+            result.append(level) # append level list to the result
+            
+        return result
 
-# q3 104. Maximum Depth of Binary Tree：https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
+# recurssion approach
 
-# recursicive (post order iteration):
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -76,39 +188,22 @@ class Solution:
 #         self.left = left
 #         self.right = right
 class Solution:
-    def maxDepth(self, root: Optional[TreeNode]) -> int:
-        return self.depth(root)
-        
-    def depth(self, node:Optional[TreeNode]) -> int:
-        if not node: # end condition return 0 when node does not exsit
-            return 0
-        # need to process the info from both left and right and add 1 for the current layer
-        leftDepth = self.depth(node.left) + 1
-        rightDepth = self.depth(node.right) + 1
-        
-        # return the max of left and right as final value
-        return max(leftDepth, rightDepth)
-# q4 111. Minimum Depth of Binary Tree: https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root: # input validation
+            
+            return []
+        levels = []
 
-# recursicive (post order iteration):
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-class Solution:
-    def minDepth(self, root: Optional[TreeNode]) -> int:
-        return self.depth(root)
-    
-    def depth(self, node: Optional[TreeNode]) -> int:
-        if not node:  # end condition return 0 when node does not exsit
-            return 0 
-        leftNode = self.depth(node.left)
-        rightNode = self.depth(node.right)
-        if not node.left and node.right:
-           return  rightNode + 1 # need to return a different recursive logic here becasue the leaf node has not been reach
-        elif not node.right and node.left:
-           return leftNode + 1 # need to return a different recursive logic here becasue the leaf node has not been reach
-        else:
-            return min(leftNode, rightNode) + 1  # same logic as q3, compare lef and right return the min
+        def bfs(node: Optional[TreeNode], level: int):
+            if not root: # input validation
+                return []
+            if len(levels) == level: # when len(levels) == level, it means we are iterating a new level now, previous level is done
+                levels.append([]) # need to append a new list to store numbers
+            levels[level].append(node.val) # append the value of node to each level(inner list)
+            if node.left:
+                bfs(node.left, level+1) # move to left
+            if node.right:
+                bfs(node.right, level+1) # move to right
+        bfs(root,0) # start from root node and 0
+        
+        return levels
