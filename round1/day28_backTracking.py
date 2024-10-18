@@ -24,7 +24,10 @@ class Solution:
         return self.result
     
 # 40. Combination Sum II: https://leetcode.com/problems/combination-sum-ii/description/?source=submission-ac
-
+'''
+tree-level deduplication: dedup on the for loop level
+tree-leaf deduplication: dedup on the recursion level
+'''
 class Solution:
     def __init__(self):
         self.path = []
