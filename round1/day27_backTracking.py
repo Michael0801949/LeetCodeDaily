@@ -70,3 +70,35 @@ class Solution:
     def combinationSum3(self, k: int, n: int) -> List[List[int]]:
         self.backtracking(k, n, 1)
         return self.result
+
+# Q3 17. Letter Combinations of a Phone Number: https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/
+
+# my answer:
+
+class Solution:
+    def __init__(self):
+        self.path = ""
+        self.result = []
+        self.dic = {'0': [''], '1': [''], '2':['a','b','c'], '3':['d', 'e', 'f'], '4': ['g', 'h', 'i'], '5': ['j', 'k', 'l'], '6': ['m', 'n', 'o'], '7': ['p', 'q', 'r', 's'], '8': ['t', 'u', 'v'], '9': ['w', 'x', 'y', 'z']}
+
+    def backTracking(self, l: list, s: int):
+        # stop condition: when start index > len(l) - 1, we already have a long enough string
+        if s == len(l):
+            self.result.append(self.path)
+            return
+        # operation on the level: 
+        # get the leters for this start index
+        letters = self.dic[l[s]]
+        # iterate each letter in the letter list, perform recursion and backtrac
+        for i in letters:
+            self.path += i
+            self.backTracking(l, s + 1)
+            self.path = self.path[:-1] # remove last element in the string
+        
+    def letterCombinations(self, digits: str) -> List[str]:
+        # input validation
+        if len(digits) == 0:
+            return self.result
+        l = list(digits)
+        self.backTracking(l,0)
+        return self.result
