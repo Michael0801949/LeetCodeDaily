@@ -159,6 +159,7 @@ class Solution:
         return dp[i]
 
 # Recursive with Memorization (pass on leectcode)
+<<<<<<< HEAD
 from typing import List
 
 class Solution:
@@ -181,3 +182,27 @@ class Solution:
 
         return dp[i]
 
+=======
+class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        # Initialize the dp array to store minimum costs up to each step
+        dp = [0] * (len(cost) + 1)
+        # Start the traversal from the top of the staircase
+        return self.traversal(cost, len(cost), dp)
+
+    def traversal(self, cost, i, dp):
+        # Base case: the cost of starting at step 0 or 1 is 0, as there's no cost to begin
+        if i == 0 or i == 1:
+            return 0
+
+        # If we've already calculated dp[i], return it to avoid redundant computation
+        if dp[i] > 0:
+            return dp[i]
+
+        # Calculate the minimum cost to reach step 'i' by choosing the optimal step from (i-1) or (i-2)
+        dp[i] = min(self.traversal(cost, i - 1, dp) + cost[i - 1], 
+                    self.traversal(cost, i - 2, dp) + cost[i - 2])
+
+        # Return the calculated minimum cost for step 'i'
+        return dp[i]
+>>>>>>> 3eeed60040d9fe7aecd3c9b55ca26177f3e69a61
